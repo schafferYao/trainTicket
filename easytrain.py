@@ -8,9 +8,17 @@ from train.submit.Submit import Submit
 from utils import TrainUtils
 from utils import Utils
 from utils.Log import Log
+from weChat.WeChat import WeChat
 
 
 def main():
+
+    #登陆微信
+    weChat = WeChat()
+    weChat.login()
+    UserName = weChat.getUserName()
+    weChat.sendMessage('微信登陆成功',UserName)
+
     login = Login()
     Log.v('正在登录...')
     result, msg = login.login(USER_NAME, USER_PWD)
@@ -38,6 +46,8 @@ def main():
             if submit.submit():
                 submit.showSubmitInfoPretty()
                 break
+            weChat.sendMessage('订单错误，请及时查看',UserName)
+            input('请确认错误信息')
             time.sleep(1)
         except Exception as e:
             Log.w(e)
